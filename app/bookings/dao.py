@@ -1,10 +1,8 @@
 from datetime import date
-from sqlalchemy import delete, insert, select, func, and_, or_
-from app.database import async_session_maker, engine
-from app.bookings.schemas import SBooking
+from sqlalchemy import insert, select, func, and_, or_
+from app.database import async_session_maker
 from app.bookings.models import Bookings
 from app.dao.base import BaseDAO
-from app.hotels.models import Hotels
 from app.hotels.rooms.models import Rooms
 
 
