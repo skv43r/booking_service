@@ -1,12 +1,17 @@
+from typing import Literal
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
+    MODE: Literal["DEV", "TEST"]
     DB_HOST: str
     DB_PORT: int
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
     DB_URL: str
+
+    TEST_DB_NAME: str
+    TEST_DB_URL: str
 
     REDIS_HOST: str
     REDIS_PORT: str
