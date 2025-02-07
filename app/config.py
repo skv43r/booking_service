@@ -3,7 +3,9 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     MODE: Literal["DEV", "TEST"]
+    LOG_LEVEL: str
     DB_HOST: str
+
     DB_PORT: int
     DB_USER: str
     DB_PASS: str
@@ -23,6 +25,8 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str
     ALGORITHM: str
+
+    DSN: str
 
     class Config:
         env_file = ".env"
