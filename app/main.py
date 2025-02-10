@@ -5,6 +5,7 @@ from typing import AsyncIterator
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_versioning import VersionedFastAPI
 
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -42,8 +43,6 @@ sentry_sdk.init(
 
 app = FastAPI(lifespan=lifespan)
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-
 app.include_router(router_users)
 app.include_router(router_bookings)
 app.include_router(router_hotels)
@@ -66,13 +65,6 @@ app.add_middleware(
                    "Authorization"],
 )
 
-admin = Admin(app, engine, authentication_backend=authentication_backend)
-
-admin.add_view(UsersAdmin)
-admin.add_view(BookingsAdmin)
-admin.add_view(RoomsAdmin)
-admin.add_view(HotelsAdmin)
-
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.perf_counter()
@@ -82,3 +74,21 @@ async def add_process_time_header(request: Request, call_next):
         "process_time": round(process_time, 4)
     })
     return response
+
+app = VersionedFastAPI(app,
+    version_format='{major}',
+    prefix_format='/v{major}',
+    # description='Greet users with a nice message',
+    # middleware=[
+    #     Middleware(SessionMiddleware, secret_key='mysecretkey')
+    # ]
+)
+
+admin = Admin(app, engine, authentication_backend=authentication_backend)
+
+admin.add_view(UsersAdmin)
+admin.add_view(BookingsAdmin)
+admin.add_view(RoomsAdmin)
+admin.add_view(HotelsAdmin)
+
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
